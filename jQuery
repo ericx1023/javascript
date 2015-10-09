@@ -1,0 +1,54 @@
+# 摘要
+jQuery 1.7 改版中取消了Live()方法，原因：
+1. 綁定在Dom的最頂層，造成效能問題
+2. stopPropagete()無法使用在live()
+3. live()無法使用方法鏈結(chainable)
+ ---
+### 想了解 .on()?
+### 先了解JS的event bubbling與capturing吧！
+
+#### bubbling
+您是否有注意到，有時候當我們觸發html最內層的元素事件，為何外層也會受影響呢？例如：hover過最內層的紅色時, 寫在最外層的事件也會受到觸發。那就是因為事件被觸發之後, 會往父元素巢狀向外擴散。
+![](/content/images/2015/09/-----2015-09-29---4-01-28.png)
+```
+<!DOCTYPE HTML>
+<html>
+<body>
+<link type="text/css" rel="stylesheet" href="example.css">
+<div class="d1">1  <!-- the topmost -->
+    <div class="d2">2
+        <div class="d3">3 <!-- the innermost -->
+        </div>
+    </div>
+</div>
+</body>
+</html>
+```
+事件就像**泡泡**一樣，由內傳遞到外。最內層觸發外層的元素(圖中紅色3)叫做==target==。所有順應W3C規定的browser定義為event.target，除了萬惡的IE(event.srcElement)。
+
+![bubbling機制](http://javascript.info/files/tutorial/browser/events/event-order-bubbling.gif)
+
+### 用不用on()方法, 有何差別？
+<iframe width="100%" height="300" src="//jsfiddle.net/AJRw3/embedded/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+
+我們也可阻止bubbling，使用
+ ```event.stopPropagation()
+ ```
+
+
+這是cross browser code
+
+```
+element.onclick = function(event) {
+    event = event || window.event // cross-browser event
+     
+    if (event.stopPropagation) {
+        // W3C standard variant
+        event.stopPropagation()
+    } else {
+        // IE variant
+        event.cancelBubble = true
+    }
+}
+
+```
