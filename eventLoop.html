@@ -1,0 +1,43 @@
+# 什麼是Javascript Event Loop?
+簡單說，就是在程序中設置兩個線程：一個負責程序本身的運行，稱為"主線程"；另一個負責主線程與其他進程（主要是各種I/O操作）的通信，被稱為"Event Loop線程"（可以譯為"消息線程"）。
+![eventLoop](http://image.beekka.com/blog/201310/2013102004.png)
+上圖主線程的綠色部分，表示運行時間，而橙色部分表示空閒時間。每當遇到I/O的時候，主線程就讓Event Loop線程去通知相應的I/O程序，然後接著往後運行，所以不存在紅色的等待時間。等到I/O程序完成操作，Event Loop線程再把結果返回主線程。主線程就調用事先設定的回調函數，完成整個任務。
+
+ --- 
+## Runtime  概念
+### 視覺呈現
+![callstack](https://developer.mozilla.org/files/4617/default.svg)
+**Stack** <br>
+方法的呼叫形成了stack中的frames <br>
+呼叫g()時, ==第一個frame==(包含了參數與區域變數)被創造出來，當g()呼叫f(), ==第二個frame==被創建, 並擺在第一個frame上面, 當f() return, 最上面的frame被丟出去, stack中剩下g()呼叫的frame, 當g() return, stack就空了(stack後進先出概念)。
+```
+function f(b){
+  var a = 12;
+  return a+b+35;
+}
+
+function g(x){
+  var m = 4;
+  return f(m*x);
+}
+
+g(21);
+```
+**Heap** <br>
+heap是散落在記憶體中大多==無架構物件==的統稱
+
+
+**Queue** <br>
+在Javascript　runtime機制中有一個==message queue==, 也就是一串要被執行的 ==message　list==. 每一個message都關連到一個function。當stack是空的時候, 一個message被取出執行，其動作包括呼叫關聯的方法（順勢產生第一個stack frame）。當stack再次空掉的時候，該message程序即中止了。
+
+```
+while(queue.waitForMessage()){
+  queue.processNextMessage();
+}
+```
+## Event loop
+
+### "Run-to-completion"
+一次只有一個message被處理, 而且完成後才會換下一個。這代表當你程式中的方法被run，他不會被先佔, 且會完整的run完, 別的code要等他run完。這就跟C語言不一樣，C語言的方法可以用thread的方式隨意停止，而後去運行其他thread的代碼。
+
+這個方法的壞處是當message耗時太久時，
