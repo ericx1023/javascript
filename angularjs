@@ -1,0 +1,22 @@
+#Directives
+以下我們將介紹：
+
+* Directive是蝦餃？
+* Directives男生女生配
+    * 什麼叫正常
+    * 有哪幾種Directive?
+    * 文字與屬性綁在一起
+    * ngAttr的屬性綁定
+
+* 自己的Directive自己做
+    * 幫你拓展模板的好Directive
+    * 把scope隔離好
+    * 創建玩弄DOM的Directive
+    * 還有可以把別人包起來的Directive
+    * 還有偷聽別人秘密的Directive
+    * 愛溝通的Directive
+
+* 摘要
+
+什麼？還有[compiler guide?](https://docs.angularjs.org/guide/compiler)
+
